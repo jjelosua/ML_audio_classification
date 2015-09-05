@@ -12,10 +12,10 @@ In order to extract image related features we are using [OpenCV 3.0][cv] in orde
 install it from source linked with python3 follow [these][cvpy] instructions
 
 ## Audio features
--Ring detection
--Percentage of silence
--Length of the chunk between the last ring and the end of the file
--Number of rings
+- Ring detection
+- Percentage of silence
+- Length of the chunk between the last ring and the end of the file
+- Number of rings
 
 ## Image features
 * white proportion
