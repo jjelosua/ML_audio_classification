@@ -9,7 +9,7 @@ the nisman investigation.
 In particular we wanted to discard answering machines and non answered calls so that we could reduce the amount of files that a human needs to audit searching for interesting information.
 
 In order to extract image related features we are using [OpenCV 3.0][cv] in order to
-install it from source linked with python3 follow [these][opencv-python3] instructions
+install it from source linked with python3 follow [these][cvpy] instructions
 
 ## Audio features
 -Ring detection
@@ -24,7 +24,7 @@ install it from source linked with python3 follow [these][opencv-python3] instru
     hypothesis
 
 [cv]: http://opencv.org/
-[opencv]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
+[cvpy]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
 
 ## TODO
 Document the process better
