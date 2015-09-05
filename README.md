@@ -24,7 +24,10 @@ install it from source linked with python3 follow [these][opencv-python3] instru
     hypothesis
 
 [cv]: http://opencv.org/
-[these]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
+[opencv]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
+
+## TODO
+Document the process better
 
 ## Authors
 * Juan Elosua
