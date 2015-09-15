@@ -39,9 +39,13 @@ INPUT_FILES = {
     'train': 'labeled_wav_image_local',
     'test': 'unlabeled_wav_image_local'
 }
+# INPUT_FILES = {
+#     'train': 'labeled_test',
+#     'test': 'unlabeled_test'
+# }
 OUTPUT_FILE = 'audio_features'
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/features'))
-N_CORES = 7
+N_CORES = 4
 # One second the length of a ring tone
 SAMPLE_RATE = 8000
 SMOOTH_W_LENGTH = 8000
@@ -71,6 +75,39 @@ def smooth(x, window_len=11, window='hanning'):
     return y[window_len:-window_len+1]
 
 
+def extract_chunks(data):
+    """
+    Extract silent and nonsilent chunks.
+    """
+    silence = data[0] == 0
+
+    if silence:
+        # Track [onset sample number, length] for each silent chunk
+        silences = [[0, 0]]
+        nonsilences = []
+    else:
+        # Track (onset sample number, amplitudes) for each nonsilent chunk
+        nonsilences = [(0, [])]
+        silences = []
+
+    for i, amp in enumerate(data):
+        if amp > 0:
+            # Entering a new nonsilent chunk
+            if silence:
+                silence = False
+                nonsilences.append((i, [amp]))
+            else:
+                nonsilences[-1][1].append(amp)
+        else:
+            # Entering a new silent chunk
+            if not silence:
+                silence = True
+                silences.append([i, 1])
+            else:
+                silences[-1][1] += 1
+    return silences, nonsilences
+
+
 def get_ring_count_feature(data, lmax_indexes):
     '''analize the local maxima of the signal and extract
     ring count feature and last ring index'''
@@ -84,7 +121,6 @@ def get_ring_count_feature(data, lmax_indexes):
 
     ring_candidates = np.where((diff >= (SAMPLE_RATE*5)-RING_SEP_THRESHOLD) &
                                (diff <= (SAMPLE_RATE*5)+RING_SEP_THRESHOLD))[0]
-    print(len(ring_candidates))
     for idx in ring_candidates:
         # Check differences between the local maximum amplitudes is small
         if not ring_ref_amp:
@@ -97,9 +133,13 @@ def get_ring_count_feature(data, lmax_indexes):
     return (number_rings, last_ring_idx)
 
 
-def get_local_maxima_idx(data):
+def get_local_maxima_idx(nonsilences):
     '''get the local maxima of the signal with a window of a second'''
-    result = argrelmax(data, order=4000)[0]
+    result = []
+    for start_idx, amps in nonsilences:
+        lmax_idx = start_idx + np.argmax(amps)
+        result.append(lmax_idx)
+    # result = argrelmax(data, order=4000)[0]
     return result
 
 
@@ -111,8 +151,8 @@ def get_percent_silence_feature(data):
 
 def get_last_ring_to_end_feature(data, idx):
     '''get the ratio on how far from the end is the last ring'''
-    result = idx/len(data)
-    return result
+    result_samples = len(data) - idx if idx else len(data)
+    return (result_samples / SAMPLE_RATE)
 
 
 def preprocess(path):
@@ -134,29 +174,43 @@ def preprocess(path):
 
 
 def featurize(idx, row):
-    # Preprocess audio into normalized and smoothed numpy array
-    smooth_data = preprocess(row['audio_file'])
-    # Compute local maxima
-    lmax_idx = get_local_maxima_idx(smooth_data)
+    try:
+        # Preprocess audio into normalized and smoothed numpy array
+        smooth_data = preprocess(row['audio_file'])
 
-    # Compute percent_silence feature
-    percent_silence = get_percent_silence_feature(smooth_data)
-    # Compute ring_count feature
-    ring_count, last_ring_idx = get_ring_count_feature(smooth_data, lmax_idx)
-    # Compute last_ring_to_end feature
-    last_ring_to_end = get_last_ring_to_end_feature(smooth_data, last_ring_idx)
+        silences, nonsilences = extract_chunks(smooth_data)
 
-    result = {
-        'index': idx,
-        'audio_file': row['audio_file'],
-        'image_file': row['image_file'],
-        'length': row['length'],
-        'label': row['label'],
-        'percent_silence': percent_silence,
-        'ring_count': ring_count,
-        'last_ring_to_end': last_ring_to_end,
-    }
-    return result
+        # Compute percent_silence feature
+        percent_silence = get_percent_silence_feature(smooth_data)
+
+        # When no nonsilences have been detected set default values
+        if not len(nonsilences[0][1]):
+            ring_count = 0
+            last_ring_to_end = len(smooth_data)
+        else:
+            # Compute local maxima
+            lmax_idx = get_local_maxima_idx(nonsilences)
+            # Compute ring_count feature
+            ring_count, last_ring_idx = get_ring_count_feature(smooth_data,
+                                                               lmax_idx)
+            # Compute last_ring_to_end feature
+            last_ring_to_end = get_last_ring_to_end_feature(smooth_data,
+                                                            last_ring_idx)
+
+        result = {
+            'index': idx,
+            'audio_file': row['audio_file'],
+            'image_file': row['image_file'],
+            'length': row['length'],
+            'label': row['label'],
+            'percent_silence': percent_silence,
+            'ring_count': ring_count,
+            'last_ring_to_end': last_ring_to_end,
+        }
+        return result
+    except Exception as e:
+        print('The audio {} raised an exception {}'.format(row['audio_file'],
+                                                           e))
 
 
 def process_audios(labeled=True):
@@ -164,7 +218,7 @@ def process_audios(labeled=True):
     dataset = 'train' if labeled else 'test'
     data = pd.read_csv('{}/{}.csv'.format(INPUT_PATH, INPUT_FILES[dataset]))
     data = data[data.length <= 300]
-    # data_sample = data.sample(20)
+    # data_sample = data.sample(200)
     data_sample = data
     r = Parallel(n_jobs=N_CORES)(delayed(featurize)(j, row)
                                  for j, row in data_sample.iterrows())

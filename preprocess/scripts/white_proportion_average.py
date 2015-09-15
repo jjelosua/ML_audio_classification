@@ -37,7 +37,7 @@ INPUT_FILES = {
     'test': 'unlabeled_wav_image_local'
 }
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/features'))
-OUTPUT_FILE = 'image_features_avg'
+OUTPUT_FILE = 'image_features'
 N_CORES = 7
 
 
