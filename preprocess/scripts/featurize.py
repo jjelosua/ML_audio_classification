@@ -45,7 +45,7 @@ INPUT_FILES = {
 # }
 OUTPUT_FILE = 'audio_features'
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/features'))
-N_CORES = 4
+N_CORES = 7
 # One second the length of a ring tone
 SAMPLE_RATE = 8000
 SMOOTH_W_LENGTH = 8000
