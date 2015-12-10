@@ -32,6 +32,23 @@ Percent of silence seemed to be one of the first things that came to mind, also 
 [cvpy]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
 [librosa]: https://github.com/bmcfee/librosa
 
+## Installation instructions
+
+1. Create a python3 virtualenv
+
+        $ virtualenv .venv -p /usr/local/bin/python3 --no-wheel
+
+2. Install dependencies
+
+        $ pip install -r requirements.txt
+
+3. Follow the instructions to install opencv 3.0.0 and link it to the virtual environment. Test it
+
+        $ python
+        >>> import cv2
+        >>> cv2.__version__
+        '3.0.0'
+
 ## Repo structure
 
 The repo is structured in three main folders
@@ -40,14 +57,20 @@ The repo is structured in three main folders
 
 Scripts used to download the audios and do the feature extraction
 
+More info && usage [here](preprocess/README.md)
+
 ### Analysis (Jupyter notebooks)
 
 Intermediate Analysis to help us understand our dataset characteristics and the performance of our selected features
 
+More info && usage [here](analysis/README.md)
+
 ### Classification (Jupyter notebooks)
 
-Final classification process, also a validation notebook to manually check the overall performance of the Machine Learning process.
+Final classification process, also a validation notebook to manually check the overall performance of the Machine Learning process. 
+
+More info && usage [here](classification/README.md)
 
 ## Authors
-* Juan Elosua
-* Francis Tzeng
+* [Juan Elosua](https://twitter.com/jjelosua)
+* [Francis Tzeng](https://twitter.com/frnsys)
