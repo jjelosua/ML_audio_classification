@@ -28,10 +28,6 @@ Percent of silence seemed to be one of the first things that came to mind, also 
 * white proportion
     * We have computed the percentage of white available in each image waveform, the greater the value the stronger the possibility of the audio being a non interesting file... or it least that is our hypothesis
 
-[cv]: http://opencv.org/
-[cvpy]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
-[librosa]: https://github.com/bmcfee/librosa
-
 ## Installation instructions
 
 1. Create a python3 virtualenv
@@ -42,7 +38,7 @@ Percent of silence seemed to be one of the first things that came to mind, also 
 
         $ pip install -r requirements.txt
 
-3. Follow the instructions to install opencv 3.0.0 and link it to the virtual environment. Test it
+3. Follow [these][cvpy] instructions to install opencv 3.0.0 and link it to the virtual environment. Test it
 
         $ python
         >>> import cv2
@@ -74,3 +70,7 @@ More info && usage [here](classification/README.md)
 ## Authors
 * [Juan Elosua](https://twitter.com/jjelosua)
 * [Francis Tzeng](https://twitter.com/frnsys)
+
+[cv]: http://opencv.org/
+[cvpy]: http://www.pyimagesearch.com/2015/06/29/install-opencv-3-0-and-python-3-4-on-osx/
+[librosa]: https://github.com/bmcfee/librosa
