@@ -15,22 +15,23 @@ import joblib.parallel
 
 # PARALLEL EXECUTION SETTINGS
 # Override joblib callback default callback behavior
-class CallBack(object):
+class BatchCompletionCallBack(object):
     completed = defaultdict(int)
 
-    def __init__(self, index, parallel):
-        self.index = index
+    def __init__(self, dispatch_timestamp, batch_size, parallel):
+        self.dispatch_timestamp = dispatch_timestamp
+        self.batch_size = batch_size
         self.parallel = parallel
 
-    def __call__(self, index):
-        CallBack.completed[self.parallel] += 1
-        if CallBack.completed[self.parallel] % 10 == 0:
+    def __call__(self, out):
+        BatchCompletionCallBack.completed[self.parallel] += 1
+        if BatchCompletionCallBack.completed[self.parallel] % 10 == 0:
             print("processed {} items"
-                  .format(CallBack.completed[self.parallel]))
-        if self.parallel._original_iterable:
+                  .format(BatchCompletionCallBack.completed[self.parallel]))
+        if self.parallel._original_iterator is not None:
             self.parallel.dispatch_next()
-# MonkeyPatch Callback
-joblib.parallel.CallBack = CallBack
+# MonkeyPatch BatchCompletionCallBack
+joblib.parallel.BatchCompletionCallBack = BatchCompletionCallBack
 
 # GLOBAL SETTINGS
 cwd = os.path.dirname(__file__)
@@ -39,10 +40,6 @@ INPUT_FILES = {
     'train': 'labeled_wav_image_local',
     'test': 'unlabeled_wav_image_local'
 }
-# INPUT_FILES = {
-#     'train': 'labeled_test',
-#     'test': 'unlabeled_test'
-# }
 OUTPUT_FILE = 'audio_features'
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/features'))
 N_CORES = 7

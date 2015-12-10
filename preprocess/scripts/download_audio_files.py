@@ -11,22 +11,23 @@ import joblib.parallel
 
 # PARALLEL EXECUTION SETTINGS
 # Override joblib callback default callback behavior
-class CallBack(object):
+class BatchCompletionCallBack(object):
     completed = defaultdict(int)
 
-    def __init__(self, index, parallel):
-        self.index = index
+    def __init__(self, dispatch_timestamp, batch_size, parallel):
+        self.dispatch_timestamp = dispatch_timestamp
+        self.batch_size = batch_size
         self.parallel = parallel
 
-    def __call__(self, index):
-        CallBack.completed[self.parallel] += 1
-        if CallBack.completed[self.parallel] % 10 == 0:
+    def __call__(self, out):
+        BatchCompletionCallBack.completed[self.parallel] += 1
+        if BatchCompletionCallBack.completed[self.parallel] % 10 == 0:
             print("processed {} items"
-                  .format(CallBack.completed[self.parallel]))
-        if self.parallel._original_iterable:
+                  .format(BatchCompletionCallBack.completed[self.parallel]))
+        if self.parallel._original_iterator is not None:
             self.parallel.dispatch_next()
-# MonkeyPatch Callback
-joblib.parallel.CallBack = CallBack
+# MonkeyPatch BatchCompletionCallBack
+joblib.parallel.BatchCompletionCallBack = BatchCompletionCallBack
 
 
 # GLOBAL SETTINGS
@@ -86,8 +87,8 @@ def process_audios(labeled=True):
         writer.writeheader()
         with open('%s/%s.csv' % (INPUT_PATH, INPUT_FILES[dataset]), 'r') as f:
             reader = CSVKitDictReader(f)
-            r = Parallel(n_jobs=N_CORES)(delayed(download_audio)(labeled, row)
-                                         for row in reader)
+            r = Parallel(n_jobs=N_CORES,)(delayed(download_audio)(labeled, row)
+                                          for row in reader)
             print('finished processing {}.csv'.format(INPUT_FILES[dataset]))
             writer.writerows(r)
 
@@ -101,6 +102,8 @@ def create_folders(paths=None):
 def create_folder_structure():
     '''Create a list of the required folders for the script execution'''
     paths = [
+        # Input path
+        INPUT_PATH,
         # Training set audio files
         '%s/train' % OUTPUT_AUDIO_PATH,
         # Test set audio files
