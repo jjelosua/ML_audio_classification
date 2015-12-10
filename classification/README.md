@@ -7,7 +7,7 @@ More info [here](../README.md)
 
 ## Analysis notebooks
 
-* launch jupyter notebook server
+* Launch jupyter notebook server
 
         $ jupyter notebook
 

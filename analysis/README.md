@@ -7,7 +7,7 @@ More info [here](../README.md)
 
 ## Classification notebooks
 
-* launch jupyter notebook server
+* Launch jupyter notebook server
 
         $ jupyter notebook
 

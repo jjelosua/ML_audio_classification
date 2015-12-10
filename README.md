@@ -47,8 +47,6 @@ Percent of silence seemed to be one of the first things that came to mind, also 
 
 ## Repo structure
 
-The repo is structured in three main folders
-
 ### Preprocess (Python scripts)
 
 Scripts used to download the audios and do the feature extraction
