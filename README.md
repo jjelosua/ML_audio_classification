@@ -65,6 +65,10 @@ Final classification process, also a validation notebook to manually check the o
 
 More info && usage [here](classification/README.md)
 
+## Audio files
+
+Due to legal and ethical issues the audio files have not been made publicly available since many of them are just private phone conversations. If somebody wants to grab a sample to do some other ML data analysis approach please [contact us](mailto:lndata@lanacion.com.ar) in order to check if we can provide you a sample index file to the audios themselves.
+
 ## Authors
 * [Juan Elosua](https://twitter.com/jjelosua)
 * [Francis Tzeng](https://twitter.com/frnsys)
