@@ -5,12 +5,14 @@ Exploratory analysis
 
 More info [here](../README.md)
 
-## Classification notebooks
+## Analysis notebooks
 
 * Launch jupyter notebook server
 
         $ jupyter notebook
 
-1. Classification: Actual implementation of the balanced and unbalanced threshold audio classification
+1. Clustering analysis: To see if we detected clusters on the labeled data
 
-2. Validation: Notebook to manually audit our classification results.
+2. Ring tone analysis: To check how well do we detect ring tones
+
+3. Sampling: To share some audios with others for new approaches to our data analysis

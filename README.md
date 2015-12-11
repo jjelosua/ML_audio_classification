@@ -55,7 +55,7 @@ More info && usage [here](preprocess/README.md)
 
 ### Analysis (Jupyter notebooks)
 
-Intermediate Analysis to help us understand our dataset characteristics and the performance of our selected features
+Intermediate Analysis to help us understand our dataset characteristics, the performance of our selected features and sampling our complete dataset for sharing purposes
 
 More info && usage [here](analysis/README.md)
 
