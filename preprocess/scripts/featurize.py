@@ -196,6 +196,7 @@ def featurize(idx, row):
 
         result = {
             'index': idx,
+            'title': row['title'],
             'audio_file': row['audio_file'],
             'image_file': row['image_file'],
             'length': row['length'],
@@ -214,7 +215,7 @@ def process_audios(labeled=True):
     '''feature engineering for the audio file'''
     dataset = 'train' if labeled else 'test'
     data = pd.read_csv('{}/{}.csv'.format(INPUT_PATH, INPUT_FILES[dataset]))
-    data = data[data.length <= 300]
+    # data = data[data.length <= 300]
     # data_sample = data.sample(200)
     data_sample = data
     r = Parallel(n_jobs=N_CORES)(delayed(featurize)(j, row)
@@ -224,6 +225,7 @@ def process_audios(labeled=True):
     df_result.to_csv('{}/{}/{}.csv'.format(OUTPUT_PATH, dataset, OUTPUT_FILE),
                      index=False,
                      columns=['index',
+                              'title',
                               'audio_file',
                               'image_file',
                               'length',

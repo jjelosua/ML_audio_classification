@@ -37,6 +37,10 @@ INPUT_FILES = {
     'train': 'labeled_wav_image_local',
     'test': 'unlabeled_wav_image_local'
 }
+# INPUT_FILES = {
+#     'train': 'labeled_wav_image_local_test',
+#     'test': 'unlabeled_wav_image_local_test'
+# }
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/features'))
 OUTPUT_FILE = 'image_features'
 N_CORES = 7
@@ -45,6 +49,7 @@ N_CORES = 7
 def white_ratio_feature(index, row):
     result = {
         'index': index,
+        'title': row['title'],
         'label': row['label'],
         'white_proportion': None,
     }
@@ -62,7 +67,7 @@ def process_audios(labeled=True):
     '''extract the image of the audio file'''
     dataset = 'train' if labeled else 'test'
     data = pd.read_csv('{}/{}.csv'.format(INPUT_PATH, INPUT_FILES[dataset]))
-    data = data[data.length <= 300]
+    # data = data[data.length <= 300]
     # data_sample = data.sample(100)
     data_sample = data
     r = Parallel(n_jobs=N_CORES)(delayed(white_ratio_feature)(j, row)
@@ -71,7 +76,7 @@ def process_audios(labeled=True):
     df_result = pd.DataFrame(r)
     df_result.to_csv('{}/{}/{}.csv'.format(OUTPUT_PATH, dataset, OUTPUT_FILE),
                      index=False,
-                     columns=['index', 'label', 'white_proportion'])
+                     columns=['index', 'title', 'label', 'white_proportion'])
     print('finished processing {}.csv'.format(INPUT_FILES[dataset]))
 
 

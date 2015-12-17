@@ -43,7 +43,7 @@ OUTPUT_FILES = {
     'test': 'unlabeled_wav_image_local'
 }
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/images'))
-HEADER = ['audio_file', 'image_file', 'length', 'label']
+HEADER = ['title', 'audio_file', 'image_file', 'length', 'label']
 PLOT_DURATION = 60
 SAMPLE_RATE = 8000
 N_CORES = 7
@@ -93,6 +93,7 @@ def make_plot(labeled, row):
     '''make a plot from the audio file'''
     dataset = 'train' if labeled else 'test'
     result = {
+        'title': row['title'],
         'audio_file': None,
         'image_file': None,
         'length': None,

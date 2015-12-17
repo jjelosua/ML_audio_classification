@@ -44,13 +44,13 @@ OUTPUT_FILES = {
     'train': 'labeled_mp3_local',
     'test': 'unlabeled_mp3_local'
 }
-HEADER = ['audio_file', 'length', 'label']
+HEADER = ['title', 'audio_file', 'length', 'label']
 N_CORES = 7
 
 
 def download_audio(labeled, row):
     '''Download an audio file'''
-    result = {}
+    result = {'title': row['Document Title']}
     dataset = 'train' if labeled else 'test'
     audio_file = '%s/%s/%s' % (
         OUTPUT_AUDIO_PATH,

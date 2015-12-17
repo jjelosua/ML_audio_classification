@@ -42,7 +42,7 @@ OUTPUT_FILES = {
     'test': 'unlabeled_wav_local'
 }
 OUTPUT_PATH = os.path.abspath(os.path.join(cwd, '../../data/output/wavs'))
-HEADER = ['audio_file', 'length', 'label']
+HEADER = ['title', 'audio_file', 'length', 'label']
 fname_pattern = re.compile('^.*/(.*)\.mp3$')
 N_CORES = 4
 
@@ -50,6 +50,7 @@ N_CORES = 4
 def transform_audio(labeled, row):
     '''Transform audio file'''
     result = {
+        'title': row['title'],
         'audio_file': None,
         'length': None,
         'label': None
